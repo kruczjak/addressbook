@@ -1,5 +1,5 @@
 %%%-------------------------------------------------------------------
-%%% @author kruczjak
+%%% @author paulina
 %%% @copyright (C) 2015, <COMPANY>
 %%% @doc
 %%%
@@ -7,7 +7,7 @@
 %%% Created : 28. Jan 2015 5:37 PM
 %%%-------------------------------------------------------------------
 -module(rAddressBookOtpSuper).
--author("kruczjak").
+-author("paulina").
 
 -behaviour(supervisor).
 

@@ -1,5 +1,5 @@
 %%%-------------------------------------------------------------------
-%%% @author kruczjak
+%%% @author paulina
 %%% @copyright (C) 2015, <COMPANY>
 %%% @doc
 %%%
@@ -7,7 +7,7 @@
 %%% Created : 20. Jan 2015 3:30 AM
 %%%-------------------------------------------------------------------
 -module(rAddressBookSup).
--author("kruczjak").
+-author("paulina").
 
 %% API
 -export([start_link/0, stop/0]).
