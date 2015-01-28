@@ -22,6 +22,9 @@
   terminate/2,
   code_change/3]).
 
+-export([addContact/2, addEmail/3, addPhone/3, removeContact/2, removeEmail/1, removePhone/1,
+  getEmails/2, getPhones/2, findByEmail/1, findByPhone/1]).
+
 -define(SERVER, ?MODULE).
 
 -record(state, {}).
@@ -60,7 +63,7 @@ start_link() ->
   {ok, State :: #state{}} | {ok, State :: #state{}, timeout() | hibernate} |
   {stop, Reason :: term()} | ignore).
 init([]) ->
-  {ok, #state{}}.
+  {ok, []}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -77,8 +80,26 @@ init([]) ->
   {noreply, NewState :: #state{}, timeout() | hibernate} |
   {stop, Reason :: term(), Reply :: term(), NewState :: #state{}} |
   {stop, Reason :: term(), NewState :: #state{}}).
-handle_call(_Request, _From, State) ->
-  {reply, ok, State}.
+handle_call({add_contact, Name, Surname}, _From, List) ->
+  check(List, addressBook:addContact(Name, Surname, List));
+handle_call({add_email, Name, Surname, Email}, _From, List) ->
+  check(List, addressBook:addEmail(Name, Surname, Email, List));
+handle_call({add_phone, Name, Surname, Phone}, _From, List) ->
+  check(List, addressBook:addPhone(Name, Surname, Phone, List));
+handle_call({remove_contact, Name, Surname}, _From, List) ->
+  check(List, addressBook:removeContact(Name, Surname, List));
+handle_call({remove_email, Email}, _From, List) ->
+  check(List, addressBook:removeEmail(Email, List));
+handle_call({remove_phone, Phone}, _From, List) ->
+  check(List, addressBook:removePhone(Phone, List));
+handle_call({get_emails, Name, Surname}, _From, List) ->
+  {reply, addressBook:getEmails(Name, Surname, List), List};
+handle_call({get_phones, Name, Surname}, _From, List) ->
+  {reply, addressBook:getPhones(Name, Surname, List), List};
+handle_call({get_by_email, Email}, _From, List) ->
+  {reply, addressBook:findByEmail(Email, List), List};
+handle_call({get_by_phone, Phone}, _From, List) ->
+  {reply, addressBook:findByPhone(Phone, List), List}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -144,3 +165,38 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+
+addContact(Name, Surname) ->
+  gen_server:call(?MODULE, {add_contact, Name, Surname}).
+
+addEmail(Name, Surname, Email) ->
+  gen_server:call(?MODULE, {add_email, Name, Surname, Email}).
+
+addPhone(Name, Surname, Phone) ->
+  gen_server:call(?MODULE, {add_phone, Name, Surname, Phone}).
+
+removeContact(Name, Surname) ->
+  gen_server:call(?MODULE, {remove_contact, Name, Surname}).
+
+removeEmail(Email) ->
+  gen_server:call(?MODULE, {remove_email, Email}).
+
+removePhone(Phone) ->
+  gen_server:call(?MODULE, {remove_phone, Phone}).
+
+getEmails(Name, Surname) ->
+  gen_server:call(?MODULE, {get_emails, Name, Surname}).
+
+getPhones(Name, Surname) ->
+  gen_server:call(?MODULE, {get_phones, Name, Surname}).
+
+findByEmail(Email) ->
+  gen_server:call(?MODULE, {get_by_email, Email}).
+
+findByPhone(Phone) ->
+  gen_server:call(?MODULE, {get_by_phone, Phone}).
+
+check(AddressBook, {error, Description}) ->
+  {reply, {error, Description}, AddressBook};
+check(_AddressBook, NewAddressBook) ->
+  {reply, ok, NewAddressBook}.
