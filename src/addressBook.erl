@@ -101,11 +101,9 @@ addGroup(First_name, Last_name, Group, List) ->
   end.
 
 groupUnique(First_name, Last_name, Group, List) ->
-  [H|T] = lists:filter(fun(One) -> One#contact.first_name =:= First_name andalso One#contact.last_name =:= Last_name end,List),
+  [H] = lists:filter(fun(One) -> One#contact.first_name =:= First_name andalso One#contact.last_name =:= Last_name end,List),
   not lists:any(fun(One) -> One == Group end, H#contact.group).
 
-%% groupUniqueForContact(Group, List) ->
-%%   not lists:any(fun(One) -> One == Group end, List).
 
 actuallyAddGroup(First_name, Last_name, Group, []) ->
   [#contact{first_name =First_name, last_name =Last_name, group =[Group]}];

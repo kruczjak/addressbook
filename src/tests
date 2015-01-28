@@ -27,3 +27,5 @@ addressBook:getEmails("G","H",Adb23).
 addressBook:findByEmail("123@pl.pl",Adb23).
 addressBook:findByEmail("ef@ac.pl",Adb23).
 addressBook:findByPhone(987,Adb23).
+Adb24=addressBook:addGroup("C","D","gr",Adb23).
+addressBook:findGroup("gr",Adb24).
