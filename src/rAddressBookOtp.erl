@@ -23,7 +23,7 @@
   code_change/3]).
 
 -export([addContact/2, addEmail/3, addPhone/3, removeContact/2, removeEmail/1, removePhone/1,
-  getEmails/2, getPhones/2, findByEmail/1, findByPhone/1]).
+  getEmails/2, getPhones/2, findByEmail/1, findByPhone/1, addGroup/3, findGroup/1]).
 
 -define(SERVER, ?MODULE).
 
@@ -99,7 +99,11 @@ handle_call({get_phones, Name, Surname}, _From, List) ->
 handle_call({get_by_email, Email}, _From, List) ->
   {reply, addressBook:findByEmail(Email, List), List};
 handle_call({get_by_phone, Phone}, _From, List) ->
-  {reply, addressBook:findByPhone(Phone, List), List}.
+  {reply, addressBook:findByPhone(Phone, List), List};
+handle_call({add_group, First_name, Last_name, Group}, _From, List) ->
+  check(List, {reply, addressBook:addGroup(First_name, Last_name, Group, List)});
+handle_call({find_group, Group}, _From, List) ->
+  {reply, addressBook:findGroup(Group, List)}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -195,6 +199,12 @@ findByEmail(Email) ->
 
 findByPhone(Phone) ->
   gen_server:call(?MODULE, {get_by_phone, Phone}).
+
+addGroup(First_name, Last_name, Group) ->
+  gen_server:call(?MODULE, {add_group, First_name, Last_name, Group}).
+
+findGroup(Group) ->
+  gen_server:call(?MODULE, {find_group, Group}).
 
 check(AddressBook, {error, Description}) ->
   {reply, {error, Description}, AddressBook};
